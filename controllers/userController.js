@@ -191,14 +191,12 @@ const updateUserById = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Update fields if provided
     if (name) user.name = name;
     if (email) user.email = email;
     if (mobile) user.mobile = mobile;
     if (user_role) user.user_role = user_role;
     if (status) user.status = status;
 
-    // Handle optional profile photo upload
     if (req.file) {
       user.profilePhoto = `/uploads/${req.file.filename}`;
     }
@@ -227,4 +225,5 @@ const updateUserById = async (req, res) => {
 
 
 
-module.exports = { registerUser, getAllUsers ,loginUser ,getUserById ,deleteUserById,updateUserById};
+
+module.exports = { registerUser, getAllUsers ,loginUser ,getUserById , deleteUserById , updateUserById};
