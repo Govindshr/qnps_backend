@@ -4,10 +4,10 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const registerUser = async (req, res) => {
-  const { name, email, mobile, user_role, password } = req.body;
+  const { name, email, mobile, user_role, password ,organisation_id,super_admin_id,admin_id} = req.body;
 
-  if (!name || !email || !mobile || !password) {
-    return res.status(400).json({ message: 'Name, email, mobile, and password are required.' });
+  if (!name || !email || !mobile || !password || !organisation_id) {
+    return res.status(400).json({ message: 'Name, email, mobile,organisation ID, and password are required.' });
   }
   
  
@@ -36,6 +36,9 @@ const registerUser = async (req, res) => {
       mobile,
       password: hashedPassword,
       profilePhoto,
+      organisation_id,
+      super_admin_id: super_admin_id || null,
+      admin_id: admin_id || null,
       user_role
     });
 
@@ -50,10 +53,22 @@ const registerUser = async (req, res) => {
   }
 };
 
-
 const getAllUsers = async (req, res) => {
+  const { name, email, mobile, user_role, page = 1, limit = 10 } = req.body;
+
   try {
-    const users = await User.find();
+    const filter = {};
+    if (name) filter.name = { $regex: name, $options: 'i' };
+    if (email) filter.email = { $regex: email, $options: 'i' };
+    if (mobile) filter.mobile = { $regex: mobile, $options: 'i' };
+    if (user_role) filter.user_role = user_role;
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const totalUsers = await User.countDocuments(filter);
+    const users = await User.find(filter)
+      .skip(skip)
+      .limit(parseInt(limit));
 
     const baseUrl = `${req.protocol}://${req.get('host')}/uploads/`;
 
@@ -62,6 +77,9 @@ const getAllUsers = async (req, res) => {
       error: false,
       message: 'Users fetched successfully',
       imageUrl: baseUrl,
+      total: totalUsers,
+      page: parseInt(page),
+      limit: parseInt(limit),
       data: users
     });
   } catch (err) {
@@ -74,6 +92,7 @@ const getAllUsers = async (req, res) => {
     });
   }
 };
+
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;

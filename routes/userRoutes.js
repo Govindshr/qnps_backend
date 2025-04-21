@@ -17,10 +17,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post('/register', upload.single('profilePhoto'), registerUser);
-router.get('/', getAllUsers);
+router.post('/all', getAllUsers);
 router.post('/login', loginUser);
 router.post('/getuserbyid', getUserById);
-router.delete('/delete', deleteUserById);
+router.post('/delete', deleteUserById);
 router.post('/update', upload.single('profilePhoto'), updateUserById);
 
 
