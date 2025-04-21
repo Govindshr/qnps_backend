@@ -147,10 +147,11 @@ const getUserById = async (req, res) => {
 
     const userToReturn = { ...user._doc };
     delete userToReturn.password;
-
+    const baseUrl = `${req.protocol}://${req.get('host')}/uploads/`;
     res.status(200).json({
       status: 200,
       error: false,
+      imageUrl: baseUrl,
       message: 'User fetched successfully',
       data: userToReturn
     });
@@ -158,6 +159,7 @@ const getUserById = async (req, res) => {
     res.status(500).json({
       status: 500,
       error: true,
+      imageUrl: null,
       message: 'Failed to fetch user',
       data: null
     });
