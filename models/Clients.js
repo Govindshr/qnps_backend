@@ -26,3 +26,13 @@ const clientschema = new mongoose.Schema({
   
 
 module.exports = mongoose.model('Clients', clientschema);
+
+const processSchema = new mongoose.Schema({
+  process_name: { type: String, required: true },
+  client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Clients', required: true },
+  status: { type: String, enum: ['active', 'inactive'], default: 'active' },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date }
+});
+
+module.exports = mongoose.model('Process', processSchema);
