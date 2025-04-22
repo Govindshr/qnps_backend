@@ -6,6 +6,7 @@ const organisationRoutes = require('./routes/organisationRoutes');
 const clientsRoutes = require('./routes/clientsRoutes')
 const path = require('path');
 const cors =require('cors')
+require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
