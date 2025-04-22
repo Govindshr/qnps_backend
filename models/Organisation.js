@@ -25,7 +25,10 @@ const organisationSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
-  }
+  },
+  updatedAt: {
+    type: Date 
+  },
 });
 
 module.exports = mongoose.model('Organisation', organisationSchema);

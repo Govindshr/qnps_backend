@@ -1,0 +1,20 @@
+const mongoose = require('mongoose');
+
+const clientschema = new mongoose.Schema({
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    logo: { type: String, default: '' },
+    address: { type: String, required: true },
+    contact_number: { type: String, required: true, unique: true },
+    status: { type: String, enum: ['active', 'inactive'], default: 'active' },
+    createdAt: { type: Date, default: Date.now },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, },
+    updatedAt: { type: Date },
+    updatedBy: { type: mongoose.Schema.Types.ObjectId, },
+    startDate: { type: Date },
+    endDate: { type: Date },
+      
+  });
+  
+
+module.exports = mongoose.model('Clients', clientschema);

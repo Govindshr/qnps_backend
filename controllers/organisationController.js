@@ -13,7 +13,8 @@ const addOrganisation = async (req, res) => {
       address,
       gst_number,
       contact_email,
-      contact_phone
+      contact_phone,
+      updatedAt: new Date() // optional
     });
 
     await newOrg.save();
@@ -131,32 +132,45 @@ const getAllOrganisations = async (req, res) => {
   };
   
   const updateOrganisationById = async (req, res) => {
-    const { id, organisation_name, address, gst_number, contact_email, contact_phone, status } = req.body;
+    const {
+      id,
+      organisation_name,
+      address,
+      gst_number,
+      contact_email,
+      contact_phone,
+      status
+    } = req.body;
   
     if (!id) {
       return res.status(400).json({ message: 'Organisation ID is required' });
     }
   
     try {
-      const organisation = await Organisation.findById(id);
-      if (!organisation) {
+      const updateData = {
+        updatedAt: new Date() // ✅ Always update timestamp
+      };
+  
+      if (organisation_name) updateData.organisation_name = organisation_name;
+      if (address) updateData.address = address;
+      if (gst_number) updateData.gst_number = gst_number;
+      if (contact_email) updateData.contact_email = contact_email;
+      if (contact_phone) updateData.contact_phone = contact_phone;
+      if (status) updateData.status = status;
+  
+      const updatedOrg = await Organisation.findByIdAndUpdate(id, updateData, {
+        new: true
+      });
+  
+      if (!updatedOrg) {
         return res.status(404).json({ message: 'Organisation not found' });
       }
-  
-      if (organisation_name) organisation.organisation_name = organisation_name;
-      if (address) organisation.address = address;
-      if (gst_number) organisation.gst_number = gst_number;
-      if (contact_email) organisation.contact_email = contact_email;
-      if (contact_phone) organisation.contact_phone = contact_phone;
-      if (status) organisation.status = status;
-  
-      await organisation.save();
   
       res.status(200).json({
         status: 200,
         error: false,
         message: 'Organisation updated successfully',
-        data: organisation
+        data: updatedOrg
       });
     } catch (err) {
       res.status(500).json({
@@ -167,6 +181,7 @@ const getAllOrganisations = async (req, res) => {
       });
     }
   };
+  
   
   
   

@@ -39,8 +39,10 @@ const registerUser = async (req, res) => {
       organisation_id,
       super_admin_id: super_admin_id || null,
       admin_id: admin_id || null,
-      user_role
+      user_role,
+      updatedAt: new Date() // optional
     });
+    
 
     await newUser.save();
 
@@ -207,24 +209,28 @@ const updateUserById = async (req, res) => {
   }
 
   try {
-    const user = await User.findById(id);
-    if (!user) {
+    const updateData = {
+      updatedAt: new Date() // ✅ update timestamp
+    };
+
+    if (name) updateData.name = name;
+    if (email) updateData.email = email;
+    if (mobile) updateData.mobile = mobile;
+    if (user_role) updateData.user_role = user_role;
+    if (status) updateData.status = status;
+    if (req.file) {
+      updateData.profilePhoto = `/uploads/${req.file.filename}`;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(id, updateData, {
+      new: true
+    });
+
+    if (!updatedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    if (name) user.name = name;
-    if (email) user.email = email;
-    if (mobile) user.mobile = mobile;
-    if (user_role) user.user_role = user_role;
-    if (status) user.status = status;
-
-    if (req.file) {
-      user.profilePhoto = `/uploads/${req.file.filename}`;
-    }
-
-    await user.save();
-
-    const userToReturn = { ...user._doc };
+    const userToReturn = { ...updatedUser._doc };
     delete userToReturn.password;
 
     res.status(200).json({
@@ -242,6 +248,7 @@ const updateUserById = async (req, res) => {
     });
   }
 };
+
 
 
 
