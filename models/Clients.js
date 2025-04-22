@@ -8,6 +8,7 @@ const clientschema = new mongoose.Schema({
     contact_number: { type: String, required: true, unique: true },
     status: { type: String, enum: ['active', 'inactive'], default: 'active' },
     createdAt: { type: Date, default: Date.now },
+    organisation_id: { type: mongoose.Schema.Types.ObjectId},
     updatedAt: { type: Date },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,

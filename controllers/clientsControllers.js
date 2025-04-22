@@ -11,14 +11,15 @@ const registerClient = async (req, res) => {
     startDate,
     endDate,
     createdBy,
+    organisation_id
   } = req.body;
 
-  if (!name || !email || !contact_number || !address || !createdBy) {
+  if (!name || !email || !contact_number || !address || !createdBy || !organisation_id) {
     return res
       .status(400)
       .json({
         message:
-          "Name, email, Contact Number , Address , and Creator are required.",
+          "Name, email, Contact Number , Address , Organisation , and Creator are required.",
       });
   }
 
@@ -41,6 +42,7 @@ const registerClient = async (req, res) => {
       contact_number,
       createdBy,
       logo,
+      organisation_id,
       startDate: startDate || null,
       endDate: endDate || null,
       updatedAt: new Date(), // optional
