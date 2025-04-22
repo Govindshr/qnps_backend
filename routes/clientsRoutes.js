@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const { registerClient ,getAllClients ,getClientById } = require('../controllers/clientsControllers');
+const { registerClient ,getAllClients ,getClientById ,deleteClientById ,updateClientById} = require('../controllers/clientsControllers');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -19,9 +19,9 @@ const upload = multer({ storage: storage });
 router.post('/addClients', upload.single('logo'), registerClient);
 router.post('/all', getAllClients);
 router.post('/getClientById', getClientById);
-// router.post('/delete', deleteUserById);
+router.post('/deleteClientById', deleteClientById);
+router.post('/updateClientById', upload.single('logo'), updateClientById);
 // router.post('/login', loginUser);
-// router.post('/update', upload.single('profilePhoto'), updateUserById);
 
 
 
