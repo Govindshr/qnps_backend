@@ -86,4 +86,72 @@ const getAllClients = async (req, res) => {
   }
 };
 
-module.exports = { registerClient ,getAllClients};
+const getClientById = async (req, res) => {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ message: 'Client ID is required in request body' });
+  }
+
+  try {
+    const clients = await Clients.findById(id);
+
+    if (!clients) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const clientToReturn = { ...clients._doc };
+    
+    const baseUrl = `${req.protocol}://${req.get('host')}/uploads/`;
+    res.status(200).json({
+      status: 200,
+      error: false,
+      imageUrl: baseUrl,
+      message: 'Client Details fetched successfully',
+      data: clientToReturn
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      error: true,
+      imageUrl: null,
+      message: 'Failed to fetch user',
+      data: null
+    });
+  }
+};
+
+const deleteUserById = async (req, res) => {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ message: 'User ID is required in request body' });
+  }
+
+  try {
+    const user = await User.findByIdAndDelete(id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found or already deleted' });
+    }
+
+    res.status(200).json({
+      status: 200,
+      error: false,
+      message: 'User deleted successfully',
+      data: {
+        id: user._id,
+        name: user.name
+      }
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      error: true,
+      message: 'Failed to delete user',
+      data: null
+    });
+  }
+};
+
+module.exports = { registerClient ,getAllClients ,getClientById};
