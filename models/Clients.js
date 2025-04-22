@@ -24,8 +24,9 @@ const clientschema = new mongoose.Schema({
       
   });
   
+const Clients = mongoose.model('Clients', clientschema);
 
-module.exports = mongoose.model('Clients', clientschema);
+
 
 const processSchema = new mongoose.Schema({
   process_name: { type: String, required: true },
@@ -35,4 +36,6 @@ const processSchema = new mongoose.Schema({
   updatedAt: { type: Date }
 });
 
-module.exports = mongoose.model('Process', processSchema);
+const Process = mongoose.model('Process', processSchema);
+
+module.exports = { Clients, Process };

@@ -1,7 +1,7 @@
 const path = require("path");
-const Clients = require("../models/Clients");
 const jwt = require("jsonwebtoken");
-const Process = require('../models/Clients'); // 👈 add at the top
+const { Clients, Process } = require('../models/Clients');
+
 
 const registerClient = async (req, res) => {
   const {
@@ -96,6 +96,7 @@ const getAllClients = async (req, res) => {
       data: clients,
     });
   } catch (err) {
+    console.log(err)
     res.status(500).json({
       status: 500,
       error: true,
