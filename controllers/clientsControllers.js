@@ -211,7 +211,23 @@ const updateClientById = async (req, res) => {
     if (name) updateData.name = name;
     if (email) updateData.email = email;
     if (address) updateData.address = address;
-    if (contact_number) updateData.contact_number = contact_number;
+    if (contact_number) {
+      // Check if contact_number already exists on another record
+      const existing = await Clients.findOne({
+        contact_number,
+        _id: { $ne: id } // Exclude current client from check
+      });
+    
+      if (existing) {
+        return res.status(409).json({
+          error: true,
+          message: 'Contact number already exists for another client.'
+        });
+      }
+    
+      updateData.contact_number = contact_number;
+    }
+    
     if (startDate) updateData.startDate = startDate;
     if (endDate) updateData.endDate = endDate;
     if (createdBy) updateData.createdBy = createdBy;
@@ -238,6 +254,7 @@ const updateClientById = async (req, res) => {
       data: clientToReturn,
     });
   } catch (err) {
+    console.log(err)
     res.status(500).json({
       status: 500,
       error: true,
@@ -250,16 +267,17 @@ const updateClientById = async (req, res) => {
 
 
 const addProcess = async (req, res) => {
-  const { process_name, client_id } = req.body;
+  const { process_name, client_id ,organisation_id} = req.body;
 
-  if (!process_name || !client_id) {
-    return res.status(400).json({ message: 'process_name and client_id are required.' });
+  if (!process_name || !client_id || !organisation_id) {
+    return res.status(400).json({ message: 'process_name and client_id and are required.' });
   }
 
   try {
     const newProcess = new Process({
       process_name,
       client_id,
+      organisation_id,
       createdAt: new Date(),
       updatedAt: new Date()
     });
@@ -283,12 +301,13 @@ const addProcess = async (req, res) => {
 };
 
 const getAllProcesses = async (req, res) => {
-  const { process_name,client_id, page = 1, limit = 10 } = req.body;
+  const { process_name,client_id,organisation_id, page = 1, limit = 10 } = req.body;
 
   try {
     const filter = {};
     if (process_name) filter.process_name = { $regex: process_name, $options: "i" };
     if(client_id) filter.client_id = {$regex:client_id,$options:"i"};
+    if(organisation_id) filter.organisation_id = {$regex:organisation_id,$options:"i"};
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     const totalProcesses = await Process.countDocuments(filter);

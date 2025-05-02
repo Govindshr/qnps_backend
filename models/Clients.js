@@ -8,7 +8,7 @@ const clientschema = new mongoose.Schema({
     contact_number: { type: String, required: true, unique: true },
     status: { type: String, enum: ['active', 'inactive'], default: 'active' },
     createdAt: { type: Date, default: Date.now },
-    organisation_id: { type: mongoose.Schema.Types.ObjectId},
+    organisation_id: { type: mongoose.Schema.Types.ObjectId ,ref: 'Organisation'},
     updatedAt: { type: Date },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
@@ -31,6 +31,7 @@ const Clients = mongoose.model('Clients', clientschema);
 const processSchema = new mongoose.Schema({
   process_name: { type: String, required: true },
   client_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Clients', required: true },
+  organisation_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Organisation', required: true },
   status: { type: String, enum: ['active', 'inactive'], default: 'active' },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date }

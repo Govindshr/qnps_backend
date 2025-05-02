@@ -69,11 +69,14 @@ const getAllUsers = async (req, res) => {
 
     const totalUsers = await User.countDocuments(filter);
     const users = await User.find(filter)
-      .skip(skip)
-      .limit(parseInt(limit));
+    .select('-password')
+    .skip(skip)
+    .limit(parseInt(limit))
+    .populate("organisation_id", "organisation_name");
+  
 
     const baseUrl = `${req.protocol}://${req.get('host')}/uploads/`;
-
+   
     res.status(200).json({
       status: 200,
       error: false,
@@ -141,7 +144,7 @@ const getUserById = async (req, res) => {
   }
 
   try {
-    const user = await User.findById(id);
+    const user = await User.findById(id).populate('organisation_id','organisation_name');
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
