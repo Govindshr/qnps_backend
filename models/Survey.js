@@ -4,7 +4,11 @@ const optionSchema = new mongoose.Schema({
   _id: { type: String, required: true },     
   text: { type: String, required: true },
   value: { type: String, default: '' },  
-  requires_explanation: { type: Boolean, default: false },     
+  requires_explanation: {
+    type: mongoose.Schema.Types.Mixed, 
+    default: false
+  },
+  
 }, { _id: false });     
 
 const formfieldsSchema = new mongoose.Schema({   

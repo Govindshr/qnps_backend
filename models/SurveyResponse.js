@@ -3,7 +3,11 @@ const optionSchema = new mongoose.Schema({
     _id: { type: String, required: true },
     text: { type: String, required: true },
     value: { type: String, default: '' },
-    requires_explanation: { type: Boolean, default: false },     
+    requires_explanation: {
+      type: mongoose.Schema.Types.Mixed, 
+      default: false
+    }
+       
   }, { _id: false });
   
   const answerOptionSchema = new mongoose.Schema({
@@ -22,7 +26,7 @@ const optionSchema = new mongoose.Schema({
   });
 
   const answeredQuestionSchema = new mongoose.Schema({
-    _id: { type: String, required: true }, // question id
+    _id: { type: String, required: true }, 
     text: { type: String, required: true },
     question_type: { type: String, required: true ,default:'single' },
     options: [optionSchema],

@@ -16,9 +16,18 @@ const createSurvey = async (req, res) => {
         options: q?.options?.map(opt => ({
           _id: opt._id,
           text: opt.text,
-          requires_explanation:opt.requires_explanation || false,
-          value: opt.value || ''
+          value: opt.value || '',
+          requires_explanation: typeof opt.requires_explanation === 'object'
+            ? {
+                type: opt.requires_explanation.type || 'text',
+                required: !!opt.requires_explanation.required,
+                placeholder:opt.requires_explanation.placeholder || '',
+                minLength: opt.requires_explanation.minLength ?? undefined,
+                maxLength: opt.requires_explanation.maxLength ?? undefined
+              }
+            : false
         })),
+        
         form_fields: q?.form_fields?.map(fil => ({
           label: fil.label || '',
           placeholder: fil.placeholder || '',
@@ -184,8 +193,14 @@ const getAllSurveys = async (req, res) => {
             _id: opt._id,
             text: opt.text,
             value: opt.value || '',
-            requires_explanation:opt.requires_explanation || false,
-          })),
+            requires_explanation:
+              typeof opt.requires_explanation === 'object'
+                ? {
+                    type: opt.requires_explanation.type || 'text',
+                    required: !!opt.requires_explanation.required
+                  }
+                : false
+          })),          
           answer: q.answer.map(a => ({
             optionId: a.optionId,
             value: a.value,
